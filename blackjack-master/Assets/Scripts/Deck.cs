@@ -34,6 +34,22 @@ public class Deck : MonoBehaviour
          * En principio, la posición de cada valor se deberá corresponder con la posición de faces. 
          * Por ejemplo, si en faces[1] hay un 2 de corazones, en values[1] debería haber un 2.
          */
+        for(int i = 0; i<52; i++)
+        {
+            if (i == 0 || i == 13 || i == 26 || i == 39) values[i] = 11;
+            if (i == 1 || i == 14 || i == 27 || i == 40) values[i] = 2;
+            if (i == 2 || i == 15 || i == 28 || i == 41) values[i] = 3;
+            if (i == 3 || i == 16 || i == 29 || i == 42) values[i] = 4;
+            if (i == 4 || i == 17 || i == 30 || i == 43) values[i] = 5;
+            if (i == 5 || i == 18 || i == 31 || i == 44) values[i] = 6;
+            if (i == 6 || i == 19 || i == 32 || i == 45) values[i] = 7;
+            if (i == 7 || i == 20 || i == 33 || i == 46) values[i] = 8;
+            if (i == 8 || i == 21 || i == 34 || i == 47) values[i] = 9;
+            if (i == 9 || i == 22 || i == 35 || i == 48) values[i] = 10;
+            if (i == 10 || i == 23 || i == 36 || i == 49) values[i] = 10;
+            if (i == 11 || i == 24 || i == 37 || i == 50) values[i] = 10;
+            if (i == 12 || i == 25 || i == 38 || i == 51) values[i] = 10;
+        }
     }
 
     private void ShuffleCards()
