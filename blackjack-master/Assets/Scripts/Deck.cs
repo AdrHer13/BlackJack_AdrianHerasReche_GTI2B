@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using UnityEngine.UI;
 
 public class Deck : MonoBehaviour
@@ -104,30 +105,39 @@ public class Deck : MonoBehaviour
 
     public void Hit()
     {
-        /*TODO: 
-         * Si estamos en la mano inicial, debemos voltear la primera carta del dealer.
-         */
-        
         //Repartimos carta al jugador
         PushPlayer();
-
-        /*TODO:
-         * Comprobamos si el jugador ya ha perdido y mostramos mensaje
-         */      
+        
+        if(player.GetComponent<CardHand>().points > 21)
+        {
+            //Jugador pierde
+            finalMessage.text = "Has perdido!!";
+        }
 
     }
 
     public void Stand()
     {
-        /*TODO: 
-         * Si estamos en la mano inicial, debemos voltear la primera carta del dealer.
-         */
+        dealer.GetComponent<CardHand>().InitialToggle();
 
-        /*TODO:
-         * Repartimos cartas al dealer si tiene 16 puntos o menos
-         * El dealer se planta al obtener 17 puntos o más
-         * Mostramos el mensaje del que ha ganado
-         */                
+        while (dealer.GetComponent<CardHand>().points <= 16)
+        //Si el dealer tiene 17 o más deja de pedir cartas
+        {
+            PushDealer();
+        }
+
+        if(dealer.GetComponent<CardHand>().points > player.GetComponent<CardHand>().points && dealer.GetComponent<CardHand>().points <= 21 && player.GetComponent<CardHand>().points <= 21)
+        {
+            finalMessage.text = "El dealer te ha reventado papulince";
+        }
+        else if (dealer.GetComponent<CardHand>().points < player.GetComponent<CardHand>().points && player.GetComponent<CardHand>().points <= 21 && dealer.GetComponent<CardHand>().points <= 21)
+        {
+            finalMessage.text = "El player ha ganado a la banca, " + Environment.NewLine + "pero la banca siempre gana";
+        } else if (dealer.GetComponent<CardHand>().points > 21)
+        {
+            finalMessage.text = "El dealer ha explotido";
+        }
+            
          
     }
 
