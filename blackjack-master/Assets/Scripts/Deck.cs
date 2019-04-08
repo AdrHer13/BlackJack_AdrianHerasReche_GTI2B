@@ -13,29 +13,25 @@ public class Deck : MonoBehaviour
     public Text finalMessage;
     public Text probMessage;
 
-    public int[] values = new int[52];
-    int cardIndex = 0;    
-       
+    //necesitamos un nuevo array para barajar de mismo tamaño que values
+    public int[] values, order = new int[52];
+    int cardIndex = 0;
+
     private void Awake()
-    {    
-        InitCardValues();        
+    {
+        InitCardValues();
 
     }
 
     private void Start()
     {
         ShuffleCards();
-        StartGame();        
+        StartGame();
     }
 
     private void InitCardValues()
     {
-        /*TODO:
-         * Asignar un valor a cada una de las 52 cartas del atributo "values".
-         * En principio, la posición de cada valor se deberá corresponder con la posición de faces. 
-         * Por ejemplo, si en faces[1] hay un 2 de corazones, en values[1] debería haber un 2.
-         */
-        for(int i = 0; i<52; i++)
+        for (int i = 0; i < 52; i++)
         {
             if (i == 0 || i == 13 || i == 26 || i == 39) values[i] = 11;
             if (i == 1 || i == 14 || i == 27 || i == 40) values[i] = 2;
@@ -55,11 +51,24 @@ public class Deck : MonoBehaviour
 
     private void ShuffleCards()
     {
-        /*TODO:
-         * Barajar las cartas aleatoriamente.
-         * El método Random.Range(0,n), devuelve un valor entre 0 y n-1
-         * Si lo necesitas, puedes definir nuevos arrays.
-         */       
+
+        int random;
+        int aux;
+        Sprite aux_sprite;
+        Debug.Log("Mezclando cartas");
+
+        for (int i = 0; i < 52; i++)
+        {
+            random = UnityEngine.Random.Range(0, 52);
+            aux = values[i];
+            aux_sprite = faces[i];
+            values[i] = values[random];
+            faces[i] = faces[random];
+
+            values[random] = aux;
+            faces[random] = aux_sprite;
+        }
+
     }
 
     void StartGame()
@@ -68,9 +77,36 @@ public class Deck : MonoBehaviour
         {
             PushPlayer();
             PushDealer();
-            /*TODO:
-             * Si alguno de los dos obtiene Blackjack, termina el juego y mostramos mensaje
-             */
+        }
+
+        if (dealer.GetComponent<CardHand>().points == player.GetComponent<CardHand>().points && dealer.GetComponent<CardHand>().points == 21 && player.GetComponent<CardHand>().points == 21)
+        {
+            finalMessage.text = "Tie, no one wins";
+            dealer.GetComponent<CardHand>().InitialToggle();
+
+            hitButton.interactable = false;
+            stickButton.interactable = false;
+        }
+        else if (dealer.GetComponent<CardHand>().points == 21)
+        {
+            //Jugador pierde
+            finalMessage.text = "Blackjack" + Environment.NewLine + "Dealer wins";
+
+            dealer.GetComponent<CardHand>().InitialToggle();
+
+            hitButton.interactable = false;
+            stickButton.interactable = false;
+
+        }
+        else if (player.GetComponent<CardHand>().points == 21)
+        {
+            //Dealer pierde
+            finalMessage.text = "Blackjack" + Environment.NewLine + "Player wins";
+
+            dealer.GetComponent<CardHand>().InitialToggle();
+
+            hitButton.interactable = false;
+            stickButton.interactable = false;
         }
     }
 
@@ -82,63 +118,94 @@ public class Deck : MonoBehaviour
          * - Probabilidad de que el jugador obtenga entre un 17 y un 21 si pide una carta
          * - Probabilidad de que el jugador obtenga más de 21 si pide una carta          
          */
+
+
     }
 
     void PushDealer()
     {
-        /*TODO:
-         * Dependiendo de cómo se implemente ShuffleCards, es posible que haya que cambiar el índice.
-         */
-        dealer.GetComponent<CardHand>().Push(faces[cardIndex],values[cardIndex]);
-        cardIndex++;        
+        dealer.GetComponent<CardHand>().Push(faces[cardIndex], values[cardIndex]);
+        cardIndex++;
     }
 
     void PushPlayer()
     {
-        /*TODO:
-         * Dependiendo de cómo se implemente ShuffleCards, es posible que haya que cambiar el índice.
-         */
         player.GetComponent<CardHand>().Push(faces[cardIndex], values[cardIndex]/*,cardCopy*/);
         cardIndex++;
         CalculateProbabilities();
-    }       
+    }
 
     public void Hit()
     {
         //Repartimos carta al jugador
         PushPlayer();
-        
-        if(player.GetComponent<CardHand>().points > 21)
+
+        if (player.GetComponent<CardHand>().points > 21)
         {
-            //Jugador pierde
-            finalMessage.text = "Has perdido!!";
+            //Jugador pierde porque se pasa
+            finalMessage.text = "Player has busted, you lose";
+
+            dealer.GetComponent<CardHand>().InitialToggle();
+
+            hitButton.interactable = false;
+            stickButton.interactable = false;
+        }
+
+        if (player.GetComponent<CardHand>().points == 21)
+        {
+            //Jugador pierde porque se pasa
+            finalMessage.text = "Player has 21, you win";
+
+            dealer.GetComponent<CardHand>().InitialToggle();
+
+            hitButton.interactable = false;
+            stickButton.interactable = false;
         }
 
     }
 
     public void Stand()
     {
+        //TODO: comprobacion de ases
+
         dealer.GetComponent<CardHand>().InitialToggle();
 
-        while (dealer.GetComponent<CardHand>().points <= 16)
-        //Si el dealer tiene 17 o más deja de pedir cartas
+        while (dealer.GetComponent<CardHand>().points < 17)
         {
+            //Si el dealer tiene 17 o más deja de pedir cartas
             PushDealer();
         }
 
-        if(dealer.GetComponent<CardHand>().points > player.GetComponent<CardHand>().points && dealer.GetComponent<CardHand>().points <= 21 && player.GetComponent<CardHand>().points <= 21)
+        if (dealer.GetComponent<CardHand>().points > player.GetComponent<CardHand>().points && dealer.GetComponent<CardHand>().points <= 21 && player.GetComponent<CardHand>().points <= 21)
         {
-            finalMessage.text = "El dealer te ha reventado papulince";
+            finalMessage.text = "Dealer wins";
+
+            hitButton.interactable = false;
+            stickButton.interactable = false;
         }
         else if (dealer.GetComponent<CardHand>().points < player.GetComponent<CardHand>().points && player.GetComponent<CardHand>().points <= 21 && dealer.GetComponent<CardHand>().points <= 21)
         {
-            finalMessage.text = "El player ha ganado a la banca, " + Environment.NewLine + "pero la banca siempre gana";
-        } else if (dealer.GetComponent<CardHand>().points > 21)
-        {
-            finalMessage.text = "El dealer ha explotido";
+            finalMessage.text = "Player wins";
+
+            hitButton.interactable = false;
+            stickButton.interactable = false;
         }
-            
-         
+        else if (dealer.GetComponent<CardHand>().points > 21)
+        {
+            finalMessage.text = "Dealer has busted, you win";
+
+            hitButton.interactable = false;
+            stickButton.interactable = false;
+        }
+        else if (dealer.GetComponent<CardHand>().points == player.GetComponent<CardHand>().points)
+        {
+            finalMessage.text = "Tie, no one wins";
+
+            hitButton.interactable = false;
+            stickButton.interactable = false;
+        }
+
+
     }
 
     public void PlayAgain()
@@ -147,10 +214,10 @@ public class Deck : MonoBehaviour
         stickButton.interactable = true;
         finalMessage.text = "";
         player.GetComponent<CardHand>().Clear();
-        dealer.GetComponent<CardHand>().Clear();          
+        dealer.GetComponent<CardHand>().Clear();
         cardIndex = 0;
         ShuffleCards();
         StartGame();
     }
-    
+
 }
