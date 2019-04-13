@@ -14,7 +14,8 @@ public class Deck : MonoBehaviour
     public Text probMessage;
 
     //necesitamos un nuevo array para barajar de mismo tamaño que values
-    public int[] values, order = new int[52];
+    public int[] values = new int[52];
+    int cartasRestante = 52;
     int cardIndex = 0;
 
     private void Awake()
@@ -115,17 +116,51 @@ public class Deck : MonoBehaviour
         /*TODO:
          * Calcular las probabilidades de:
          * - Teniendo la carta oculta, probabilidad de que el dealer tenga más puntuación que el jugador
-         * - Probabilidad de que el jugador obtenga entre un 17 y un 21 si pide una carta
-         * - Probabilidad de que el jugador obtenga más de 21 si pide una carta          
+         * - Probabilidad de que el jugador obtenga entre un 17 y un 21 si pide una carta          
          */
 
+        // probabilidad de pasarse
+        float probabilidadPasarse = 0.0f;
+        int cantidad = 0;
+        int[] numeros = new int[10];
+        for (int i = 0; i<numeros.Length; i++)
+        {
+            numeros[i] = i + 1;
+        }
 
+        foreach (int numero in numeros)
+        {
+            if(numero > (21 - player.GetComponent<CardHand>().points))
+            {
+                int cantidadCartas = 4;
+                if(numero == 10)
+                {
+                    cantidadCartas = 16;
+                }
+                foreach(GameObject f in player.GetComponent<CardHand>().cards)
+                {
+                    if (f.GetComponent<CardModel>().value == numero)
+                    {
+                        cantidadCartas--;
+                    }
+                }
+                cantidad += cantidadCartas;
+            }
+        }
+        probabilidadPasarse = (float)cantidad / cartasRestante * 100;
+        Debug.Log("Probabilidad pasarse: " + probabilidadPasarse);
+        probMessage.text = "Probabilidad pasarse: " + Convert.ToInt16(probabilidadPasarse).ToString() + "%";
+        if(probabilidadPasarse > 100)
+        {
+            probMessage.text = "Probabilidad pasarse: ";
+        }
     }
 
     void PushDealer()
     {
         dealer.GetComponent<CardHand>().Push(faces[cardIndex], values[cardIndex]);
         cardIndex++;
+        cartasRestante--;
     }
 
     void PushPlayer()
@@ -133,6 +168,7 @@ public class Deck : MonoBehaviour
         player.GetComponent<CardHand>().Push(faces[cardIndex], values[cardIndex]/*,cardCopy*/);
         cardIndex++;
         CalculateProbabilities();
+        cartasRestante--;
     }
 
     public void Hit()
@@ -215,6 +251,7 @@ public class Deck : MonoBehaviour
         finalMessage.text = "";
         player.GetComponent<CardHand>().Clear();
         dealer.GetComponent<CardHand>().Clear();
+        cartasRestante = 52;
         cardIndex = 0;
         ShuffleCards();
         StartGame();
