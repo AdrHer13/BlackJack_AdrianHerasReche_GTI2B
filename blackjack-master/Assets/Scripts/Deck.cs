@@ -22,16 +22,28 @@ public class Deck : MonoBehaviour
     int cartasRestante = 52;
     int cardIndex = 0;
 
+    //para hacer la banca
+    public Text MoneyText;
+    public Text BetMoneyText;
+    public int Money;
+    public int Bet;
+    public Button button10;
+    public Button button100;
+    public Button button1000;
+    public Button button10000;
+    public Button buttonAllIn;
+
     private void Awake()
     {
         InitCardValues();
-
     }
 
     private void Start()
     {
         ShuffleCards();
+        Money = 1000;
         StartGame();
+        MoneyText.text = Money.ToString();
     }
 
     private void InitCardValues()
@@ -85,11 +97,16 @@ public class Deck : MonoBehaviour
 
         if (dealer.GetComponent<CardHand>().points == player.GetComponent<CardHand>().points && dealer.GetComponent<CardHand>().points == 21 && player.GetComponent<CardHand>().points == 21)
         {
-            finalMessage.text = "Tie, no one wins";
+            finalMessage.text = "Tie with Blackjacks, no one wins";
             dealer.GetComponent<CardHand>().InitialToggle();
 
             hitButton.interactable = false;
             stickButton.interactable = false;
+
+            Money += Bet;
+            MoneyText.text = Money.ToString();
+            Bet = 0;
+            BetMoneyText.text = Bet.ToString();
         }
         else if (dealer.GetComponent<CardHand>().points == 21)
         {
@@ -101,6 +118,9 @@ public class Deck : MonoBehaviour
             hitButton.interactable = false;
             stickButton.interactable = false;
 
+            Bet = 0;
+            BetMoneyText.text = Bet.ToString();
+
         }
         else if (player.GetComponent<CardHand>().points == 21)
         {
@@ -111,6 +131,18 @@ public class Deck : MonoBehaviour
 
             hitButton.interactable = false;
             stickButton.interactable = false;
+
+            Money += 2 * Bet;
+            MoneyText.text = Money.ToString();
+            Bet = 0;
+            BetMoneyText.text = Bet.ToString();
+        }
+
+        Bet = 0;
+        BetMoneyText.text = Bet.ToString();
+        if (Money > 0)
+        {
+            RaiseBet(10);
         }
     }
 
@@ -125,7 +157,7 @@ public class Deck : MonoBehaviour
             numeros[i] = i + 1;
         }
 
-        if(dealer.GetComponent<CardHand>().cards.ToArray().Length > 1)
+        if (dealer.GetComponent<CardHand>().cards.ToArray().Length > 1)
         {
             foreach (int numero in numeros)
             {
@@ -154,7 +186,7 @@ public class Deck : MonoBehaviour
                     {
                         cantidadCartas--;
                     }*/
-                    
+
                     casosFavorables += cantidadCartas;
                 }
             }
@@ -163,7 +195,8 @@ public class Deck : MonoBehaviour
         if (probabilidadDealerMasPuntuacion >= 100)
         {
             probMessage.text = "Probabilidad dealer tenga más puntuación: " + "100%" + Environment.NewLine;
-        } else
+        }
+        else
         {
             probMessage.text = "Probabilidad dealer tenga más puntuación: " + Convert.ToInt16(probabilidadDealerMasPuntuacion).ToString() + "%" + Environment.NewLine;
         }
@@ -209,7 +242,8 @@ public class Deck : MonoBehaviour
         if (probabilidadClavarla >= 100)
         {
             probMessage.text += "Probabilidad de tener entre 17 y 21 puntos: " + "100%" + Environment.NewLine;
-        } else
+        }
+        else
         {
             probMessage.text += "Probabilidad de tener entre 17 y 21 puntos: " + Convert.ToInt16(probabilidadClavarla).ToString() + "%" + Environment.NewLine;
         }
@@ -245,10 +279,11 @@ public class Deck : MonoBehaviour
             }
         }
         probabilidadPasarse = (float)casosPasarse / cartasRestante * 100;
-        if(probabilidadPasarse >= 100)
+        if (probabilidadPasarse >= 100)
         {
             probMessage.text += "Probabilidad pasarse: " + "100%";
-        } else
+        }
+        else
         {
             probMessage.text += "Probabilidad pasarse: " + Convert.ToInt16(probabilidadPasarse).ToString() + "%";
         }
@@ -283,6 +318,9 @@ public class Deck : MonoBehaviour
 
             hitButton.interactable = false;
             stickButton.interactable = false;
+
+            Bet = 0;
+            BetMoneyText.text = Bet.ToString();
         }
 
         if (player.GetComponent<CardHand>().points == 21)
@@ -294,8 +332,18 @@ public class Deck : MonoBehaviour
 
             hitButton.interactable = false;
             stickButton.interactable = false;
+
+            Money += 2 * Bet;
+            MoneyText.text = Money.ToString();
+            Bet = 0;
+            BetMoneyText.text = Bet.ToString();
         }
 
+        button10.interactable = false;
+        button100.interactable = false;
+        button1000.interactable = false;
+        button10000.interactable = false;
+        buttonAllIn.interactable = false;
     }
 
     public void Stand()
@@ -316,6 +364,9 @@ public class Deck : MonoBehaviour
 
             hitButton.interactable = false;
             stickButton.interactable = false;
+
+            Bet = 0;
+            BetMoneyText.text = Bet.ToString();
         }
         else if (dealer.GetComponent<CardHand>().points < player.GetComponent<CardHand>().points && player.GetComponent<CardHand>().points <= 21 && dealer.GetComponent<CardHand>().points <= 21)
         {
@@ -323,6 +374,11 @@ public class Deck : MonoBehaviour
 
             hitButton.interactable = false;
             stickButton.interactable = false;
+
+            Money += 2 * Bet;
+            MoneyText.text = Money.ToString();
+            Bet = 0;
+            BetMoneyText.text = Bet.ToString();
         }
         else if (dealer.GetComponent<CardHand>().points > 21)
         {
@@ -330,6 +386,11 @@ public class Deck : MonoBehaviour
 
             hitButton.interactable = false;
             stickButton.interactable = false;
+
+            Money += 2 * Bet;
+            MoneyText.text = Money.ToString();
+            Bet = 0;
+            BetMoneyText.text = Bet.ToString();
         }
         else if (dealer.GetComponent<CardHand>().points == player.GetComponent<CardHand>().points)
         {
@@ -337,15 +398,88 @@ public class Deck : MonoBehaviour
 
             hitButton.interactable = false;
             stickButton.interactable = false;
+
+            Money += Bet;
+            MoneyText.text = Money.ToString();
+            Bet = 0;
+            BetMoneyText.text = Bet.ToString();
         }
 
+        if (Money <= 0)
+        {
+            playAgainButton.interactable = false;
+        }
 
+        checkBetButtons();
+    }
+
+    public void Button10OnClick()
+    {
+        if (Money >= 10)
+        {
+            RaiseBet(10);
+        }
+        else
+        {
+            checkBetButtons();
+        }
+    }
+
+    public void Button100OnClick()
+    {
+        if (Money >= 100)
+        {
+            RaiseBet(100);
+        }
+        else
+        {
+            checkBetButtons();
+        }
+    }
+
+    public void Button1000OnClick()
+    {
+        if (Money >= 1000)
+        {
+            RaiseBet(1000);
+        }
+        else
+        {
+            checkBetButtons();
+        }
+    }
+
+    public void Button10000OnClick()
+    {
+        if (Money >= 10000)
+        {
+            RaiseBet(10000);
+        }
+        else
+        {
+            checkBetButtons();
+        }
+    }
+
+    public void ButtonAllInOnClick()
+    {
+            RaiseBet(Money);
+    }
+
+    public void RaiseBet(int raise)
+    {
+        Bet += raise;
+        Money -= raise;
+        BetMoneyText.text = Bet.ToString();
+        MoneyText.text = Money.ToString();
+        checkBetButtons();
     }
 
     public void PlayAgain()
     {
         hitButton.interactable = true;
         stickButton.interactable = true;
+        checkBetButtons();
         finalMessage.text = "";
         player.GetComponent<CardHand>().Clear();
         dealer.GetComponent<CardHand>().Clear();
@@ -353,6 +487,53 @@ public class Deck : MonoBehaviour
         cardIndex = 0;
         ShuffleCards();
         StartGame();
+    }
+
+    public void checkBetButtons()
+    {
+        if (Money >= 100000)
+        {
+            button10.interactable = true;
+            button100.interactable = true;
+            button1000.interactable = true;
+            button10000.interactable = true;
+        }
+        else if (Money >= 10000)
+        {
+            button10.interactable = true;
+            button100.interactable = true;
+            button1000.interactable = true;
+            button10000.interactable = true;
+        }
+        else if (Money >= 1000)
+        {
+            button10.interactable = true;
+            button100.interactable = true;
+            button1000.interactable = true;
+            button10000.interactable = false;
+        }
+        else if (Money >= 100)
+        {
+            button10.interactable = true;
+            button100.interactable = true;
+            button1000.interactable = false;
+            button10000.interactable = false;
+        }
+        else if (Money >= 10)
+        {
+            button10.interactable = true;
+            button100.interactable = false;
+            button1000.interactable = false;
+            button10000.interactable = false;
+        }
+        else if (Money <= 0)
+        {
+            button10.interactable = false;
+            button100.interactable = false;
+            button1000.interactable = false;
+            button10000.interactable = false;
+            buttonAllIn.interactable = false;
+        }
     }
 
 }
