@@ -194,11 +194,11 @@ public class Deck : MonoBehaviour
         probabilidadDealerMasPuntuacion = (float)casosFavorables / cartasRestante * 100;
         if (probabilidadDealerMasPuntuacion >= 100)
         {
-            probMessage.text = "Probabilidad dealer tenga más puntuación: " + "100%" + Environment.NewLine;
+            probMessage.text = "Probabilty that the dealer has more points: " + "100%" + Environment.NewLine;
         }
         else
         {
-            probMessage.text = "Probabilidad dealer tenga más puntuación: " + Convert.ToInt16(probabilidadDealerMasPuntuacion).ToString() + "%" + Environment.NewLine;
+            probMessage.text = "Probabilty that the dealer has more points: " + Convert.ToInt16(probabilidadDealerMasPuntuacion).ToString() + "%" + Environment.NewLine;
         }
 
         // probabilidad de pasarse
@@ -241,11 +241,11 @@ public class Deck : MonoBehaviour
         probabilidadClavarla = (float)casosClavarla / cartasRestante * 100;
         if (probabilidadClavarla >= 100)
         {
-            probMessage.text += "Probabilidad de tener entre 17 y 21 puntos: " + "100%" + Environment.NewLine;
+            probMessage.text += "Probability to have between 17 & 21 point at drawing: " + "100%" + Environment.NewLine;
         }
         else
         {
-            probMessage.text += "Probabilidad de tener entre 17 y 21 puntos: " + Convert.ToInt16(probabilidadClavarla).ToString() + "%" + Environment.NewLine;
+            probMessage.text += "Probability to have between 17 & 21 point at drawing: " + Convert.ToInt16(probabilidadClavarla).ToString() + "%" + Environment.NewLine;
         }
 
         // probabilidad de pasarse
@@ -281,11 +281,11 @@ public class Deck : MonoBehaviour
         probabilidadPasarse = (float)casosPasarse / cartasRestante * 100;
         if (probabilidadPasarse >= 100)
         {
-            probMessage.text += "Probabilidad pasarse: " + "100%";
+            probMessage.text += "Probability to bust: " + "100%";
         }
         else
         {
-            probMessage.text += "Probabilidad pasarse: " + Convert.ToInt16(probabilidadPasarse).ToString() + "%";
+            probMessage.text += "Probability to bust: " + Convert.ToInt16(probabilidadPasarse).ToString() + "%";
         }
     }
 

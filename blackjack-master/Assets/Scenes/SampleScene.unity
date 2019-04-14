@@ -270,6 +270,8 @@ MonoBehaviour:
   button10: {fileID: 1921633625}
   button100: {fileID: 122361416}
   button1000: {fileID: 1443161458}
+  button10000: {fileID: 814209547}
+  buttonAllIn: {fileID: 631364858}
 --- !u!1 &122361414
 GameObject:
   m_ObjectHideFlags: 0
@@ -488,7 +490,7 @@ GameObject:
   m_Component:
   - component: {fileID: 288132038}
   m_Layer: 5
-  m_Name: Banca
+  m_Name: Bank
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -954,7 +956,7 @@ GameObject:
   - component: {fileID: 631364859}
   - component: {fileID: 631364858}
   m_Layer: 5
-  m_Name: 100000
+  m_Name: All In
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1021,7 +1023,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 113795718}
-        m_MethodName: Button1000OnClick
+        m_MethodName: ButtonAllInOnClick
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1219,7 +1221,9 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 100000
+  m_Text: 'All In
+
+'
 --- !u!222 &707176467
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -1308,7 +1312,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 113795718}
-        m_MethodName: Button1000OnClick
+        m_MethodName: Button10000OnClick
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1427,7 +1431,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 'Probabilidades:
+  m_Text: 'Probabilities:
 
 '
 --- !u!222 &909819000
@@ -2429,7 +2433,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 'Banca:
+  m_Text: 'Bank:
 
 '
 --- !u!222 &1964773408
