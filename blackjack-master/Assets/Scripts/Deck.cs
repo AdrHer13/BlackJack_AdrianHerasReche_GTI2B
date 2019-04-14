@@ -91,9 +91,10 @@ public class Deck : MonoBehaviour
     {
         for (int i = 0; i < 2; i++)
         {
-            PushDealer();
             PushPlayer();
+            PushDealer();
         }
+        CalculateProbabilities();
 
         if (dealer.GetComponent<CardHand>().points == player.GetComponent<CardHand>().points && dealer.GetComponent<CardHand>().points == 21 && player.GetComponent<CardHand>().points == 21)
         {
