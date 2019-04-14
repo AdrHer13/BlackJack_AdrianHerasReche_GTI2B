@@ -13,10 +13,6 @@ public class Deck : MonoBehaviour
     public Text finalMessage;
     public Text probMessage;
 
-    //Comentario general: ha sido necesario repartirle primero al dealer a la hora de calcular probabilidades.
-    //  Si no eran probabilidades erroneas
-    //No sabía si tenía que tener en cuenta la carta oculta del dealer como oculta o como mostrada, así que he hecho ambos códigos
-
     //necesitamos un nuevo array para barajar de mismo tamaño que values
     public int[] values = new int[52];
     int cartasRestante = 52;
@@ -176,17 +172,17 @@ public class Deck : MonoBehaviour
                             cantidadCartas--;
                         }
                     }
-                    foreach (GameObject f in dealer.GetComponent<CardHand>().cards)
+                    /*foreach (GameObject f in dealer.GetComponent<CardHand>().cards)
                     {
                         if (f.GetComponent<CardModel>().value == numero)
                         {
                             cantidadCartas--;
                         }
-                    }
-                    /*if (dealer.GetComponent<CardHand>().cards.ToArray()[1].GetComponent<CardModel>().value == numero)
+                    }*/
+                    if (dealer.GetComponent<CardHand>().cards.ToArray()[1].GetComponent<CardModel>().value == numero)
                     {
                         cantidadCartas--;
-                    }*/
+                    }
 
                     casosFavorables += cantidadCartas;
                 }
@@ -224,17 +220,17 @@ public class Deck : MonoBehaviour
                             cantidadCartas--;
                         }
                     }
-                    foreach (GameObject f in dealer.GetComponent<CardHand>().cards)
+                    /*foreach (GameObject f in dealer.GetComponent<CardHand>().cards)
                     {
                         if (f.GetComponent<CardModel>().value == numero)
                         {
                             cantidadCartas--;
                         }
-                    }
-                    /*if (dealer.GetComponent<CardHand>().cards.ToArray()[1].GetComponent<CardModel>().value == numero)
+                    }*/
+                    if (dealer.GetComponent<CardHand>().cards.ToArray()[1].GetComponent<CardModel>().value == numero)
                     {
                         cantidadCartas--;
-                    }*/
+                    }
                     casosClavarla += cantidadCartas;
                 }
             }
