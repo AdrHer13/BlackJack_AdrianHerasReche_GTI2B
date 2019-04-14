@@ -13,6 +13,10 @@ public class Deck : MonoBehaviour
     public Text finalMessage;
     public Text probMessage;
 
+    //Comentario general: ha sido necesario repartirle primero al dealer a la hora de calcular probabilidades.
+    //  Si no eran probabilidades erroneas
+    //No sabía si tenía que tener en cuenta la carta oculta del dealer como oculta o como mostrada, así que he hecho ambos códigos
+
     //necesitamos un nuevo array para barajar de mismo tamaño que values
     public int[] values = new int[52];
     int cartasRestante = 52;
@@ -56,7 +60,6 @@ public class Deck : MonoBehaviour
         int random;
         int aux;
         Sprite aux_sprite;
-        Debug.Log("Mezclando cartas");
 
         for (int i = 0; i < 52; i++)
         {
@@ -76,8 +79,8 @@ public class Deck : MonoBehaviour
     {
         for (int i = 0; i < 2; i++)
         {
-            PushPlayer();
             PushDealer();
+            PushPlayer();
         }
 
         if (dealer.GetComponent<CardHand>().points == player.GetComponent<CardHand>().points && dealer.GetComponent<CardHand>().points == 21 && player.GetComponent<CardHand>().points == 21)
@@ -113,46 +116,141 @@ public class Deck : MonoBehaviour
 
     private void CalculateProbabilities()
     {
-        /*TODO:
-         * Calcular las probabilidades de:
-         * - Teniendo la carta oculta, probabilidad de que el dealer tenga más puntuación que el jugador
-         * - Probabilidad de que el jugador obtenga entre un 17 y un 21 si pide una carta          
-         */
-
-        // probabilidad de pasarse
-        float probabilidadPasarse = 0.0f;
-        int cantidad = 0;
+        //Probabilidad de dealer con más puntuacion
+        float probabilidadDealerMasPuntuacion = 0.0f;
+        int casosFavorables = 0;
         int[] numeros = new int[10];
-        for (int i = 0; i<numeros.Length; i++)
+        for (int i = 0; i < numeros.Length; i++)
         {
             numeros[i] = i + 1;
         }
 
-        foreach (int numero in numeros)
+        if(dealer.GetComponent<CardHand>().cards.ToArray().Length > 1)
         {
-            if(numero > (21 - player.GetComponent<CardHand>().points))
+            foreach (int numero in numeros)
             {
-                int cantidadCartas = 4;
-                if(numero == 10)
+                if (numero > (player.GetComponent<CardHand>().points - dealer.GetComponent<CardHand>().cards.ToArray()[1].GetComponent<CardModel>().value))
                 {
-                    cantidadCartas = 16;
+                    int cantidadCartas = 4;
+                    if (numero == 10)
+                    {
+                        cantidadCartas = 16;
+                    }
+                    foreach (GameObject f in player.GetComponent<CardHand>().cards)
+                    {
+                        if (f.GetComponent<CardModel>().value == numero)
+                        {
+                            cantidadCartas--;
+                        }
+                    }
+                    foreach (GameObject f in dealer.GetComponent<CardHand>().cards)
+                    {
+                        if (f.GetComponent<CardModel>().value == numero)
+                        {
+                            cantidadCartas--;
+                        }
+                    }
+                    /*if (dealer.GetComponent<CardHand>().cards.ToArray()[1].GetComponent<CardModel>().value == numero)
+                    {
+                        cantidadCartas--;
+                    }*/
+                    
+                    casosFavorables += cantidadCartas;
                 }
-                foreach(GameObject f in player.GetComponent<CardHand>().cards)
+            }
+        }
+        probabilidadDealerMasPuntuacion = (float)casosFavorables / cartasRestante * 100;
+        if (probabilidadDealerMasPuntuacion >= 100)
+        {
+            probMessage.text = "Probabilidad dealer tenga más puntuación: " + "100%" + Environment.NewLine;
+        } else
+        {
+            probMessage.text = "Probabilidad dealer tenga más puntuación: " + Convert.ToInt16(probabilidadDealerMasPuntuacion).ToString() + "%" + Environment.NewLine;
+        }
+
+        // probabilidad de pasarse
+        float probabilidadClavarla = 0.0f;
+        int casosClavarla = 0;
+
+        if (dealer.GetComponent<CardHand>().cards.ToArray().Length > 1)
+        {
+            foreach (int numero in numeros)
+            {
+                if (numero >= (17 - player.GetComponent<CardHand>().points) && numero <= (21 - player.GetComponent<CardHand>().points))
                 {
-                    if (f.GetComponent<CardModel>().value == numero)
+                    int cantidadCartas = 4;
+                    if (numero == 10)
+                    {
+                        cantidadCartas = 16;
+                    }
+                    foreach (GameObject f in player.GetComponent<CardHand>().cards)
+                    {
+                        if (f.GetComponent<CardModel>().value == numero)
+                        {
+                            cantidadCartas--;
+                        }
+                    }
+                    foreach (GameObject f in dealer.GetComponent<CardHand>().cards)
+                    {
+                        if (f.GetComponent<CardModel>().value == numero)
+                        {
+                            cantidadCartas--;
+                        }
+                    }
+                    /*if (dealer.GetComponent<CardHand>().cards.ToArray()[1].GetComponent<CardModel>().value == numero)
+                    {
+                        cantidadCartas--;
+                    }*/
+                    casosClavarla += cantidadCartas;
+                }
+            }
+        }
+        probabilidadClavarla = (float)casosClavarla / cartasRestante * 100;
+        if (probabilidadClavarla >= 100)
+        {
+            probMessage.text += "Probabilidad de tener entre 17 y 21 puntos: " + "100%" + Environment.NewLine;
+        } else
+        {
+            probMessage.text += "Probabilidad de tener entre 17 y 21 puntos: " + Convert.ToInt16(probabilidadClavarla).ToString() + "%" + Environment.NewLine;
+        }
+
+        // probabilidad de pasarse
+        float probabilidadPasarse = 0.0f;
+        int casosPasarse = 0;
+
+        if (dealer.GetComponent<CardHand>().cards.ToArray().Length > 1)
+        {
+            foreach (int numero in numeros)
+            {
+                if (numero > (21 - player.GetComponent<CardHand>().points))
+                {
+                    int cantidadCartas = 4;
+                    if (numero == 10)
+                    {
+                        cantidadCartas = 16;
+                    }
+                    foreach (GameObject f in player.GetComponent<CardHand>().cards)
+                    {
+                        if (f.GetComponent<CardModel>().value == numero)
+                        {
+                            cantidadCartas--;
+                        }
+                    }
+                    if (dealer.GetComponent<CardHand>().cards.ToArray()[1].GetComponent<CardModel>().value == numero)
                     {
                         cantidadCartas--;
                     }
+                    casosPasarse += cantidadCartas;
                 }
-                cantidad += cantidadCartas;
             }
         }
-        probabilidadPasarse = (float)cantidad / cartasRestante * 100;
-        Debug.Log("Probabilidad pasarse: " + probabilidadPasarse);
-        probMessage.text = "Probabilidad pasarse: " + Convert.ToInt16(probabilidadPasarse).ToString() + "%";
-        if(probabilidadPasarse > 100)
+        probabilidadPasarse = (float)casosPasarse / cartasRestante * 100;
+        if(probabilidadPasarse >= 100)
         {
-            probMessage.text = "Probabilidad pasarse: ";
+            probMessage.text += "Probabilidad pasarse: " + "100%";
+        } else
+        {
+            probMessage.text += "Probabilidad pasarse: " + Convert.ToInt16(probabilidadPasarse).ToString() + "%";
         }
     }
 
@@ -167,8 +265,8 @@ public class Deck : MonoBehaviour
     {
         player.GetComponent<CardHand>().Push(faces[cardIndex], values[cardIndex]/*,cardCopy*/);
         cardIndex++;
-        CalculateProbabilities();
         cartasRestante--;
+        CalculateProbabilities();
     }
 
     public void Hit()
